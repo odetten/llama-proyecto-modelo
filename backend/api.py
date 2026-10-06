@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from ollama import chat
 
-from recomendador import MUNICIPIOS, recomendar
+from backend.recomendador import MUNICIPIOS, recomendar
 
 app = FastAPI()
 
