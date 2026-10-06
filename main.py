@@ -1,10 +1,10 @@
 from ollama import chat
 
 response = chat(
-    model= "llama3.2:3b",
+    model= "llama3.1:8pip streamlib",
     messages=[
         {"role": "system", "content": "Eres un asistente confiable. Responde en español."},
-        {"role": "user", "content": "explica que es una api rest.."}
+        {"role": "user", "content": "explica que es una api rest"}
     ]
 )
 

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" fill="none">
+  <g stroke="#899174" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".15">
+    <g transform="translate(18 20)">
+      <path d="M3 17h45c-1 8-7 12-14 12H17C10 29 4 25 3 17Z"/>
+      <path d="M6 13c1-8 8-12 19-12s18 4 20 12H6Z"/>
+      <path d="M7 17h37M12 34h29c-2 7-7 10-15 10s-12-3-14-10Z"/>
+      <path d="m15 7 2 1m7-3 2 1m8 1 2 1"/>
+    </g>
+    <g transform="translate(151 26) rotate(12)">
+      <path d="M4 5 45 18 9 47 4 5Z"/>
+      <path d="m7 13 31 10M11 25l20 7"/>
+      <circle cx="17" cy="19" r="3.1"/>
+      <circle cx="29" cy="23" r="3.1"/>
+      <circle cx="17" cy="32" r="3.1"/>
+    </g>
+    <g transform="translate(83 113) rotate(-8)">
+      <path d="M5 16c3-9 13-14 24-14s21 5 24 14"/>
+      <path d="M6 17c7 4 13-3 20 1 7 4 13-4 21 0"/>
+      <path d="M7 22c7 4 13-3 20 1 7 4 13-4 20 0"/>
+      <path d="M8 27c3 9 11 14 20 14s17-5 20-14"/>
+      <path d="m16 11 2 2m10-5 1 2m9 4 2 1m-25 12 2 1m16 2 2 1"/>
+    </g>
+    <g transform="translate(14 157)">
+      <path d="M11 2h25l-3 39H14L11 2Z"/>
+      <path d="M9 2h29M16 9h15M15 29h17"/>
+      <path d="m19 16 4 7 4-7m4-7 3-7"/>
+      <path d="M18 1 16-5m9 6V-6m8 7 3-5"/>
+    </g>
+    <g transform="translate(161 151) rotate(8)">
+      <path d="M3 18 25 2l23 16"/>
+      <path d="M7 18c2 15 9 22 18 22s16-7 19-22"/>
+      <path d="M10 22c7 5 14-3 21 1 4 2 8 1 11-1"/>
+      <path d="m15 15 2 2m9-7 2 2m8 7 2 2m-17 11 2 1m12 1 2 1"/>
+    </g>
+    <g transform="translate(83 13) rotate(-18)">
+      <path d="M9 5h26l-3 34H12L9 5Z"/>
+      <path d="M12 13h20M14 20h16"/>
+      <path d="m15 4 4-5m6 6 1-8m7 8 4-5"/>
+    </g>
+    <g transform="translate(75 192)">
+      <path d="M4 11c0-6 7-9 19-9s19 3 19 9v19c0 6-7 9-19 9S4 36 4 30V11Z"/>
+      <path d="M4 12c0 5 7 8 19 8s19-3 19-8"/>
+      <path d="M4 29c0 5 7 8 19 8s19-3 19-8"/>
+      <path d="M20 2v8m-7-5 4 5m12-5-4 5"/>
+    </g>
+    <g transform="translate(188 89) rotate(20)">
+      <path d="m4 9 14-6 14 6v27H4V9Z"/>
+      <path d="M4 15h28M10 9v27m12-27v27"/>
+      <path d="m8 3 4-3m6 3 4-3m6 3 4-3"/>
+    </g>
+  </g>
+  <g fill="#d96742" opacity=".20">
+    <circle cx="65" cy="82" r="2"/>
+    <circle cx="145" cy="70" r="2"/>
+    <circle cx="54" cy="132" r="2"/>
+    <circle cx="143" cy="124" r="2"/>
+    <circle cx="56" cy="222" r="2"/>
+    <circle cx="225" cy="215" r="2"/>
+  </g>
+</svg>

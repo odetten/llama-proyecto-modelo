@@ -1,7 +1,11 @@
+from typing import Literal
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from ollama import chat
+
+from recomendador import MUNICIPIOS, recomendar
 
 app = FastAPI()
 
@@ -19,18 +23,41 @@ app.add_middleware(
 class PromptRequest(BaseModel):
     prompt: str
 
+
+class RecommendationRequest(BaseModel):
+    municipio_origen: str
+    distancia_max_km: int = Field(default=10, ge=1, le=40)
+    gustos: list[str] = Field(default_factory=list)
+    alergias: list[str] = Field(default_factory=list)
+    presupuesto_mxn: int = Field(default=250, ge=50, le=2000)
+    personas: int = Field(default=2, ge=1, le=20)
+    dieta: bool = False
+    hambre: Literal["poca", "media", "mucha"] = "media"
+    transporte: Literal["auto", "transporte_publico"] = "auto"
+    ambiente: Literal["me_da_igual", "tematico", "tranquilo"] = "me_da_igual"
+
+
 @app.get("/")
 def home():
     return {
-        "message": "Bienvenido a la API de Llama3.2:3b. Envía un POST a /ask con un JSON que contenga el campo 'prompt' para obtener una respuesta."
+        "message": "Bienvenido a la API de Llama3.1:8b. Envía un POST a /ask con un JSON que contenga el campo 'prompt' para obtener una respuesta."
     }
+
+
+@app.post("/recomendar")
+def recommend_restaurants(request: RecommendationRequest):
+    if request.municipio_origen not in MUNICIPIOS:
+        raise HTTPException(status_code=422, detail="El municipio no es válido.")
+
+    candidatos, respuesta = recomendar(request.model_dump())
+    return {"candidatos": candidatos, "respuesta": respuesta}
 
 
 @app.post("/ask")
 def ask_llama(request: PromptRequest):
     try:
         response = chat(
-            model="llama3.2:3b",
+            model="llama3.1:8b",
             messages=[
                 {
                     "role": "system",

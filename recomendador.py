@@ -67,6 +67,7 @@ def construir_mensaje(form, candidatos):
 - Gustos de comida: {', '.join(form['gustos']) or 'sin preferencia'}
 - Alergias: {', '.join(form['alergias']) or 'ninguna'}
 - Presupuesto por persona: {form['presupuesto_mxn']} MXN
+- Personas que van: {form.get('personas', 1)}
 - ¿Hago dieta / quiero pocas calorías?: {'sí' if form['dieta'] else 'no'}
 - Nivel de hambre: {form['hambre']}
 - Transporte: {'auto' if form['transporte'] == 'auto' else 'transporte público'}
@@ -87,7 +88,7 @@ def recomendar(form):
                     "Prueba ampliando la distancia o el presupuesto.")
 
     response = chat(
-        model="llama3.2:3b",
+        model="llama3.1:8b",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": construir_mensaje(form, candidatos)},
