@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import MiMapa from "./mapa.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const MUNICIPIOS = [
@@ -330,6 +331,16 @@ export default function App() {
               </button>
             </div>
           </form>
+        </section>
+
+        <section className="map-section" aria-labelledby="map-heading">
+          <div className="section-heading">
+            <div>
+              <span className="section-kicker">MONTERREY</span>
+              <h2 id="map-heading">Explora el mapa</h2>
+            </div>
+          </div>
+          <MiMapa restaurantes={result?.candidatos ?? []} />
         </section>
 
         {loading && (
