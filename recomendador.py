@@ -1,5 +1,5 @@
 import json
-from math import radians, sin, cos, asin, sqrt
+from math import ceil, radians, sin, cos, asin, sqrt
 from pathlib import Path
 
 from ollama import chat
@@ -20,6 +20,7 @@ MUNICIPIOS = {
     "García": (25.8133, -100.5900),
     "Santiago": (25.4236, -100.1514),
 }
+TIEMPO_COMIDA_ESTIMADO_MINUTOS = 45
 
 
 def haversine_km(a, b):
@@ -34,14 +35,24 @@ def _puntaje_gustos(r, gustos):
     return sum(1 for g in gustos if g.strip().lower() in texto)
 
 
-def filtrar(restaurantes, form, max_candidatos=6):
-    origen = MUNICIPIOS[form["municipio_origen"]]
+def filtrar(restaurantes, form, max_candidatos=12):
+    latitud = form.get("latitud")
+    longitud = form.get("longitud")
+    if (latitud is None) != (longitud is None):
+        raise ValueError("La latitud y la longitud deben enviarse juntas.")
+    origen = (
+        (latitud, longitud)
+        if latitud is not None and longitud is not None
+        else MUNICIPIOS[form["municipio_origen"]]
+    )
     out = []
     for r in restaurantes:
+        if r["lat"] is None or r["lon"] is None:
+            continue
         dist = haversine_km(origen, (r["lat"], r["lon"]))
         if dist > form["distancia_max_km"]:
             continue
-        if r["precio_promedio_mxn"] > form["presupuesto_mxn"]:
+        if r["precio_promedio_mxn"] is None or r["precio_promedio_mxn"] > form["presupuesto_mxn"]:
             continue
         if set(form["alergias"]) & set(r["alergenos"]):
             continue
@@ -57,12 +68,81 @@ def filtrar(restaurantes, form, max_candidatos=6):
 
     # primero los que coinciden con los gustos, luego los más cercanos
     out.sort(key=lambda x: (-_puntaje_gustos(x, form["gustos"]), x["distancia_km"]))
-    return out[:max_candidatos]
+
+    # Alterna municipios para incluir opciones de toda el área dentro del radio.
+    por_municipio = {}
+    for restaurante in out:
+        por_municipio.setdefault(restaurante["municipio"], []).append(restaurante)
+
+    seleccionados = []
+    while por_municipio and len(seleccionados) < max_candidatos:
+        for municipio in list(por_municipio):
+            seleccionados.append(por_municipio[municipio].pop(0))
+            if not por_municipio[municipio]:
+                del por_municipio[municipio]
+            if len(seleccionados) == max_candidatos:
+                break
+    return seleccionados
+
+
+def estimar_tiempo_total(distancia_km, transporte, tiempo_comida_minutos):
+    """Estimate round-trip travel plus time to eat; this is not live traffic data."""
+    velocidad_kmh = 25 if transporte == "auto" else 15
+    minutos_espera = 0 if transporte == "auto" else 10
+    distancia_ruta_km = distancia_km * 1.3
+    tiempo_ida = ceil(distancia_ruta_km / velocidad_kmh * 60) + minutos_espera // 2
+    tiempo_regreso = tiempo_ida
+    return {
+        "tiempo_ida_minutos": tiempo_ida,
+        "tiempo_comida_minutos": tiempo_comida_minutos,
+        "tiempo_regreso_minutos": tiempo_regreso,
+        "tiempo_total_minutos": tiempo_ida + tiempo_comida_minutos + tiempo_regreso,
+    }
+
+
+def recomendar_por_tiempo(form, tiempo_disponible_minutos):
+    candidatos = filtrar(RESTAURANTES, form, max_candidatos=len(RESTAURANTES))
+    for restaurante in candidatos:
+        restaurante.update(
+            estimar_tiempo_total(
+                restaurante["distancia_km"],
+                form["transporte"],
+                TIEMPO_COMIDA_ESTIMADO_MINUTOS,
+            )
+        )
+
+    candidatos = [
+        restaurante
+        for restaurante in candidatos
+        if restaurante["tiempo_total_minutos"] <= tiempo_disponible_minutos
+    ]
+    candidatos.sort(
+        key=lambda restaurante: (
+            restaurante["tiempo_total_minutos"],
+            restaurante["distancia_km"],
+            -_puntaje_gustos(restaurante, form["gustos"]),
+        )
+    )
+    candidatos = candidatos[:12]
+
+    if not candidatos:
+        respuesta = (
+            f"No encontré restaurantes que quepan en {tiempo_disponible_minutos} minutos "
+            f"considerando {TIEMPO_COMIDA_ESTIMADO_MINUTOS} minutos para comer y tus filtros actuales. "
+            "Prueba dando más tiempo o ampliando la distancia."
+        )
+    else:
+        respuesta = (
+            "Ordené estas opciones por el menor tiempo estimado de ida, comida y regreso. "
+            "Los tiempos son aproximados y no consideran el tráfico en tiempo real."
+        )
+    return candidatos, respuesta
 
 
 def construir_mensaje(form, candidatos):
     return f"""FORMULARIO DEL USUARIO
-- Municipio donde estoy: {form['municipio_origen']}
+    - Municipio de referencia: {form['municipio_origen']}
+    - Origen de distancia: {'ubicación compartida' if form.get('latitud') is not None else 'centro del municipio'}
 - Distancia máxima que quiero recorrer: {form['distancia_max_km']} km
 - Gustos de comida: {', '.join(form['gustos']) or 'sin preferencia'}
 - Alergias: {', '.join(form['alergias']) or 'ninguna'}
