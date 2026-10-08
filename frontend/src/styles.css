@@ -205,6 +205,24 @@ input[type="range"] { width: 100%; height: 4px; margin: 7px 0 0; accent-color: v
 .submit-button span { color: #d9dcbf; font-size: 17px; }
 
 .results-section { padding: 36px 0 52px; border-top: 1px solid var(--line); }
+.map-route-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.map-route-controls > span { color: var(--muted); font-size: 11px; }
+.location-button, .directions-button { min-height: 36px; padding: 0 12px; border: 1px solid #d9dfd1; border-radius: 3px; background: #fffefa; color: var(--green); cursor: pointer; font-size: 11px; font-weight: 600; }
+.location-button:hover:not(:disabled), .directions-button:hover:not(:disabled) { background: #f1f4eb; }
+.location-button:disabled, .directions-button:disabled { cursor: wait; opacity: 0.65; }
+.directions-button { display: block; margin-top: 10px; background: var(--green); color: white; }
+.directions-button:hover:not(:disabled) { background: #354a2a; color: white; }
+.route-message { margin: 8px 0; color: #a34e34; font-size: 11px; }
+.route-details { margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--line); }
+.route-details-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.route-details-heading > div { display: grid; gap: 4px; }
+.route-details-heading strong { color: var(--ink); font-size: 13px; }
+.route-details-heading span, .route-details-heading button, .route-attribution { color: var(--muted); font-size: 10px; }
+.route-details-heading button { padding: 6px 9px; border: 1px solid var(--line); border-radius: 3px; background: transparent; cursor: pointer; }
+.route-details ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; max-height: 230px; margin: 12px 0 8px; padding: 0; overflow: auto; list-style: none; }
+.route-details li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #eeece5; color: #55574d; font-size: 11px; }
+.route-details li small { flex: none; color: var(--muted); font-size: 10px; }
+.route-attribution { display: block; }
 .results-heading { align-items: flex-end; margin-bottom: 20px; }
 .result-count { padding-bottom: 3px; }
 .restaurant-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
@@ -275,6 +293,8 @@ input[type="range"] { width: 100%; height: 4px; margin: 7px 0 0; accent-color: v
   .submit-row { align-items: stretch; flex-direction: column; }
   .privacy-note { line-height: 1.5; }
   .submit-button { width: 100%; }
+  .map-route-controls { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .route-details ol { grid-template-columns: 1fr; }
   .restaurant-card { grid-template-columns: 92px 1fr; }
   .restaurant-info { padding: 12px; }
   .restaurant-info h3 { font-size: 15px; }
